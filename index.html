@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Job Portal</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #ff6a00);
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Background animation */
+@keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+
+/* Glass card */
+.container {
+    width: 100%;
+    max-width: 650px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    color: white;
+    animation: fadeIn 1s ease;
+}
+
+/* fade animation */
+@keyframes fadeIn {
+    from {opacity:0; transform: translateY(20px);}
+    to {opacity:1; transform: translateY(0);}
+}
+
+h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.job-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.1);
+}
+
+.job-info p {
+    margin: 5px 0;
+}
+
+/* Inputs */
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    transition: 0.3s;
+}
+
+input:focus, textarea:focus {
+    background: rgba(255,255,255,0.25);
+    transform: scale(1.02);
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #ff512f, #dd2476);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 600;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* Loading animation */
+button.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* Toast message */
+#msg {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>🚀 Software Developer</h2>
+
+    <div class="job-info">
+        <p><b>Company:</b> Demo Technologies Pvt Ltd</p>
+        <p><b>Location:</b> Hyderabad</p>
+        <p><b>Experience:</b> 0–2 Years</p>
+        <p><b>Skills:</b> Java, SQL, HTML, CSS</p>
+    </div>
+
+    <h3>Apply Now</h3>
+
+    <form id="jobForm">
+
+        <input type="text" id="fullName" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="phone" placeholder="Phone Number" required>
+        <input type="text" id="qualification" placeholder="Qualification" required>
+        <input type="number" id="experience" placeholder="Years of Experience" required>
+        <input type="text" id="skills" placeholder="Skills">
+        <textarea id="coverLetter" placeholder="Cover Letter" rows="4"></textarea>
+
+        <button id="submitBtn" type="submit">Apply Now</button>
+    </form>
+
+    <p id="msg"></p>
+</div>
+
+<script>
+document.getElementById("jobForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const btn = document.getElementById("submitBtn");
+    btn.classList.add("loading");
+    btn.innerText = "Submitting... ⏳";
+
+    const data = {
+        fullName: fullName.value,
+        email: email.value,
+        phoneNumber: phone.value,
+        qualification: qualification.value,
+        experience: experience.value,
+        skills: skills.value,
+        coverLetter: coverLetter.value
+    };
+
+    try {
+        const res = await fetch("https://57ejjflvrj.execute-api.ap-south-1.amazonaws.com/DEVE/apply", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        document.getElementById("msg").innerText = "✅ " + result.message;
+
+        btn.innerText = "Apply Now";
+        btn.classList.remove("loading");
+
+        document.getElementById("jobForm").reset();
+
+    } catch (err) {
+        document.getElementById("msg").innerText = "❌ Error submitting form";
+
+        btn.innerText = "Apply Now";
+        btn.classList.remove("loading");
+    }
+});
+</script>
+
+</body>
+</html>
